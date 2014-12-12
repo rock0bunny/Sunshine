@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -59,15 +60,7 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
         if(id == R.id.action_refresh){
-            try {
-                AsyncTask<String, Void, String[]> task = new FetchWeatherTask().execute("Kyiv","7","metric");
-                String[] result = task.get();
-                forecastAdapter.clear();
-                forecastAdapter.addAll(result);
-            } catch (InterruptedException | ExecutionException e) {
-                Log.e(TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
+            new FetchWeatherTask().execute("Kyiv","7","metric");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -89,12 +82,18 @@ public class ForecastFragment extends Fragment {
         forecastAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 R.layout.list_item_forecast,
-                R.id.list_item_forecast_textview);
+                R.id.list_item_forecast_textview,
+                weekForecasts);
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
 
         listView.setAdapter(forecastAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+            }
+        });
 
         return rootView;
     }
@@ -121,6 +120,15 @@ public class ForecastFragment extends Fragment {
             }
 
             return weatherData;
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            if(result!=null){
+                forecastAdapter.clear();
+                forecastAdapter.addAll(result);
+            }
+
         }
 
         private String getForecastJsonStr(String uri) {
