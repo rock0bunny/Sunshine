@@ -3,6 +3,7 @@ package com.example.sharapa.sunshine;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -82,11 +83,14 @@ public class ForecastFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
 
         listView.setAdapter(forecastAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String text = forecastAdapter.getItem(position);
-                Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+                Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
+                detailIntent.putExtra(Intent.EXTRA_TEXT, text);
+                startActivity(detailIntent);
             }
         });
 
@@ -230,13 +234,6 @@ public class ForecastFragment extends Fragment {
         }
 
         private String buildUri(String postCode, String days, String units){
-//            Uri.Builder builder = new Uri.Builder();
-//            builder.scheme("http")
-//                    .authority("api.openweathermap.org")
-//                    .appendPath("data")
-//                    .appendEncodedPath("2.5")
-//                    .appendPath("forecast")
-//                    .appendPath("daily")
 
             Uri buildUri = Uri.parse("http://api.openweathermap.org/data/2.5/forecast/daily?")
                     .buildUpon()
