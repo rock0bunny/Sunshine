@@ -80,6 +80,8 @@ public class ForecastFragment extends Fragment {
                 R.layout.list_item_forecast,
                 R.id.list_item_forecast_textview);
 
+        new FetchWeatherTask().execute("Kyiv","7","metric");
+
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
 
         listView.setAdapter(forecastAdapter);
